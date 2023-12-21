@@ -1,0 +1,29 @@
+services:
+  nestjs-test-mysql:
+    image: mysql
+    restart: always
+    container_name: nestjs-test-mysql
+    ports:
+      - 3306:${DB_PORT}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql:/data/mysql
+  nestjs-test-api:
+    image: nestjs-test-api
+    restart: always
+    container_name: nestjs-test-api
+    ports:
+      - ${PORT}:${PORT}
+    build:
+      context: .
+    env_file:
+      - .env
+    depends_on:
+      - nestjs-test-mysql
+volumes:
+  mysql:
+    driver: local
